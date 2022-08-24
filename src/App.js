@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import NewsCard from "./components/NewsCard";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const [news, setNews] = useState([]);
+
+  const getNews = async (title) => {
+    const response = await fetch(
+      `https://newsapi.org/v2/everything?q=${title ? title : 'football'}&from=2022-08-24&apiKey=9489ac48a04242a7aad3a37757db7ff9#`
+    );
+    const data = await response.json();
+    setNews(data.articles);
+  }; 
+  useEffect(() => {
+   
+    getNews();
+  }, []);
+
+  return (<>
+      <Navbar getNews={getNews} />
+    <div id="card">
+    {news.map((va) => {
+        return <NewsCard data={va} />;
+      })}
     </div>
+  </>
   );
 }
 
